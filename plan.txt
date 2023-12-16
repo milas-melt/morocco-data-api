@@ -22,3 +22,5 @@ This might include improving the parsing logic, handling exceptions, and managin
 6. Integration and Testing:
 Integrate this script with your web server framework (like Flask or Django for Python)
 and thoroughly test the endpoints to ensure they return accurate and up-to-date data.
+
+7. Create CRON jobs
