@@ -20,17 +20,20 @@ class Theme:
     def __init__(self, name):
         self.name = name
         self.datasets = []
+        self.url = ""
 
     def add_dataset(self, dataset):
         self.datasets.append(dataset)
 
+    def change_url(self, url):
+        self.url = url
+
     def __str__(self):
-        return f"Theme: {self.name},\nDatasets: {[dataset.name for dataset in self.datasets]}\nDatasets Count: {len(self.datasets)}"
+        return f"Theme: {self.name},\nDatasets: {[dataset.name for dataset in self.datasets]}\nDatasets Count: {len(self.datasets)}\nTheme url: {self.url}"
 
 
 DEBUG = True
-VERBOSE = False
-HEADLESS = False
+VERBOSE = True
 
 
 def get_dataset_name(link):
@@ -85,7 +88,7 @@ def get_download_link(link):
 def get_datasets(theme):
     if DEBUG:
         print(f"get_datasets: {theme.name}")
-    url = f"https://data.gov.ma/data/fr/group/{theme.name.lower()}"
+    url = f"https://data.gov.ma/{theme.url}"
     page = requests.get(url)
     if DEBUG:
         _status = page.status_code
@@ -151,11 +154,16 @@ def get_themes():
         text = h2.get_text().strip()
         theme_objects.append(Theme(text))
 
+    theme_cnt = 0
+    for a in soup.find_all("a", class_="media-view"):
+        link = a["href"]
+        theme_objects[theme_cnt].change_url(link)
+        theme_cnt += 1
+
     return theme_objects
 
 
 def main():
-    # get_datasets()
     themes = get_themes()
     for theme in themes:
         if VERBOSE:
