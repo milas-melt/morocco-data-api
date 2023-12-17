@@ -24,3 +24,36 @@ Integrate this script with your web server framework (like Flask or Django for P
 and thoroughly test the endpoints to ensure they return accurate and up-to-date data.
 
 7. Create CRON jobs
+
+
+2 - API Endpoint Creation detail:
+
+    a) Choose a Database:
+
+        Select a database that suits your needs. Common choices include PostgreSQL, MySQL, 
+        or SQLite. Make sure the database server is set up and running on your server.
+
+    b) Create a Database Table:
+
+        Define a table structure to store information about the datasets. This table should include 
+        columns such as dataset name, topic, link, etc.
+
+    c) Insert Data into the Database:
+
+        Write a script or use a tool to insert the existing datasets into the database. You can automate 
+        this process based on the dataset information you already have.
+
+    d) Create FastAPI Endpoints:
+
+        Build FastAPI endpoints to fetch specific datasets from the database. The API should connect to 
+        the database, execute queries, and return the requested data.
+
+    e) Deploy the FastAPI App:
+
+        Deploy the FastAPI application on your server. You can use ASGI servers like Uvicorn or Hypercorn 
+        to run your FastAPI app.
+
+    f) Secure the API:
+
+        Implement authentication and authorization mechanisms to secure access to your API. This ensures 
+        that only authorized users can fetch datasets.
