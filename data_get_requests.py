@@ -47,10 +47,13 @@ def get_dataset_tag(link):
     link_page = requests.get(nav)
     if DEBUG:
         _status = link_page.status_code
-        print(f"status code: {_status}")
+
         if _status != 200:
-            print(f"\n\nERROR\n\n")
+            print(f"\n\nERROR")
             print(f"link: {link_page}")
+            print(f"status code: {_status}\n\n")
+        else:
+            print(f"status code: {_status}")
     link_soup = BeautifulSoup(link_page.content, "html.parser")
     try:
         tag_elements = link_soup.find("ul", class_="tag-list well").find_all("li")
@@ -67,10 +70,13 @@ def get_download_link(link):
     link_page = requests.get(nav)
     if DEBUG:
         _status = link_page.status_code
-        print(f"status code: {_status}")
+
         if _status != 200:
-            print(f"\n\nERROR\n\n")
+            print(f"\n\nERROR")
             print(f"link: {link_page}")
+            print(f"status code: {_status}\n\n")
+        else:
+            print(f"status code: {_status}")
     link_soup = BeautifulSoup(link_page.content, "html.parser")
     download_link = link_soup.find("a", class_="resource-url-analytics")["href"]
     return download_link
@@ -83,10 +89,13 @@ def get_datasets(theme):
     page = requests.get(url)
     if DEBUG:
         _status = page.status_code
-        print(f"status code: {_status}")
+
         if _status != 200:
-            print(f"\n\nERROR\n\n")
+            print(f"\n\nERROR")
             print(f"link: {page.url}")
+            print(f"status code: {_status}\n\n")
+        else:
+            print(f"status code: {_status}")
     soup = BeautifulSoup(page.content, "html.parser")
 
     dataset_items = soup.find_all("li", class_="dataset-item")
@@ -97,10 +106,13 @@ def get_datasets(theme):
         link_page = requests.get(nav)
         if DEBUG:
             _status = link_page.status_code
-            print(f"status code: {_status}")
+
             if _status != 200:
-                print(f"\n\nERROR\n\n")
+                print(f"\n\nERROR")
                 print(f"link: {link_page.url}")
+                print(f"status code: {_status}\n\n")
+            else:
+                print(f"status code: {_status}")
         link_soup = BeautifulSoup(link_page.content, "html.parser")
         db_link = link_soup.find("li", class_="resource-item").find("a")["href"]
         db_name = get_dataset_name(db_link)
@@ -125,10 +137,13 @@ def get_themes():
     page = requests.get(url)
     if DEBUG:
         _status = page.status_code
-        print(f"status code: {_status}")
         if _status != 200:
             print(f"\n\nERROR")
-            print(f"link: {page.url}\n\n")
+            print(f"link: {page.url}")
+            print(f"status code: {_status}\n\n")
+        else:
+            print(f"status code: {_status}")
+
     soup = BeautifulSoup(page.content, "html.parser")
 
     theme_objects = []
