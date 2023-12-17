@@ -25,7 +25,7 @@ class Theme:
         self.datasets.append(dataset)
 
     def __str__(self):
-        return f"Theme: {self.name}, Datasets: {[dataset.name for dataset in self.datasets]}"
+        return f"Theme: {self.name},\nDatasets: {[dataset.name for dataset in self.datasets]}\nDatasets Count: {len(self.datasets)}"
 
 
 def get_dataset_name(link):
@@ -75,6 +75,7 @@ def get_datasets(theme):
             download_link=download_link,
             tags=db_tags,
         )
+        theme.add_dataset(dataset)
         print("=" * 50)
         print(dataset)
 
@@ -100,6 +101,11 @@ def main():
         print(f"\n-----\t\tTheme: {theme.name}\t\t-----\n")
         print("*" * 80)
         get_datasets(theme)
+
+    print("\n\n\n")
+    print("===== LOADING COMPLETE =====")
+    for theme in themes:
+        print(theme)
 
 
 if __name__ == "__main__":

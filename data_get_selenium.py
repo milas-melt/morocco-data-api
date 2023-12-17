@@ -2,6 +2,7 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.chrome.service import Service
 from bs4 import BeautifulSoup
 
 
@@ -28,32 +29,45 @@ class Theme:
         self.datasets.append(dataset)
 
     def __str__(self):
-        return f"Theme: {self.name}, Datasets: {[dataset.name for dataset in self.datasets]}"
+        return f"Theme: {self.name},\nDatasets: {[dataset.name for dataset in self.datasets]}\nDatasets Count: {len(self.datasets)}"
 
+
+DEBUG = False
+VERBOSE = True
+HEADLESS = True
 
 # Set up the Selenium WebDriver
-chromedriver_path = "/chromedriver_mac64/chromedriver"  # Replace with the path to your downloaded chromedriver
+chromedriver_path = "./chromedriver-mac-x64/chromedriver"
+
+# Create a Service object passing the path of the Chromedriver
+service = Service(chromedriver_path)
 
 options = webdriver.ChromeOptions()
-options.headless = False  # Ensure headless mode is turned off
-driver = webdriver.Chrome(options=options, executable_path=chromedriver_path)
+options.headless = HEADLESS
+driver = webdriver.Chrome(options=options, service=service)
 
 
 # Function to get the name of a dataset from a link
 def get_dataset_name(link):
+    if DEBUG:
+        print(f"get_dataset_name: {link}")
     return link.split("/")[-1]
 
 
 # Function to get tags for a dataset
-def get_dataset_tag(link):
-    # Navigate to the dataset page
-    driver.get(link)
-    # Wait for the tag list to load and get its HTML content
-    tag_list_html = (
-        WebDriverWait(driver, 10)
-        .until(EC.presence_of_element_located((By.CLASS_NAME, "tag-list")))
-        .get_attribute("innerHTML")
-    )
+def get_dataset_tag():
+    if DEBUG:
+        print(f"get_dataset_tag")
+    try:
+        # Wait for the tag list to load and get its HTML content
+        tag_list_html = (
+            WebDriverWait(driver, 5)
+            .until(EC.presence_of_element_located((By.CLASS_NAME, "tag-list")))
+            .get_attribute("innerHTML")
+        )
+    except:
+        return []
+
     # Use BeautifulSoup to parse the HTML and extract tags
     soup = BeautifulSoup(tag_list_html, "html.parser")
     tags = [li.get_text().strip() for li in soup.find_all("li")]
@@ -61,13 +75,15 @@ def get_dataset_tag(link):
 
 
 # Function to get the download link for a dataset
-def get_download_link(link):
-    # Navigate to the dataset page
-    driver.get(link)
+def get_download_link():
+    if DEBUG:
+        print(f"get_download_link")
     # Wait for the download link to be clickable and get its href attribute
     download_link = (
-        WebDriverWait(driver, 10)
-        .until(EC.element_to_be_clickable((By.CLASS_NAME, "resource-url-analytics")))
+        WebDriverWait(driver, 5)
+        .until(
+            EC.presence_of_element_located((By.CLASS_NAME, "resource-url-analytics"))
+        )
         .get_attribute("href")
     )
     return download_link
@@ -75,6 +91,8 @@ def get_download_link(link):
 
 # Function to scrape datasets for a given theme
 def get_datasets(theme):
+    if DEBUG:
+        print(f"get_datasets: {theme.name}")
     # Navigate to the theme page
     driver.get(f"https://data.gov.ma/data/fr/group/{theme.name.lower()}")
     # Use BeautifulSoup to parse the page HTML
@@ -85,9 +103,10 @@ def get_datasets(theme):
         link_tag = item.find("a", href=True)
         if link_tag:
             dataset_link = f"https://data.gov.ma{link_tag['href']}"
+            driver.get(dataset_link)
             dataset_name = get_dataset_name(dataset_link)
-            dataset_tags = get_dataset_tag(dataset_link)
-            download_link = get_download_link(dataset_link)
+            dataset_tags = get_dataset_tag()
+            download_link = get_download_link()
             dataset = Dataset(
                 name=dataset_name,
                 url=dataset_link,
@@ -95,14 +114,19 @@ def get_datasets(theme):
                 tags=dataset_tags,
             )
             theme.add_dataset(dataset)
+        print("=" * 50)
+        print(dataset)
 
 
 # Function to get all themes
 def get_themes():
+    if DEBUG:
+        print(f"get_themes")
     # Navigate to the themes page
     driver.get("https://data.gov.ma/data/fr/group")
     # Use BeautifulSoup to parse the page HTML
     soup = BeautifulSoup(driver.page_source, "html.parser")
+
     theme_objects = []
     for h2 in soup.find_all("h2", class_="media-heading"):
         theme_name = h2.get_text().strip()
@@ -115,9 +139,17 @@ def main():
     # Get themes and their datasets
     themes = get_themes()
     for theme in themes:
+        if VERBOSE:
+            print("*" * 80)
+            print(f"\n-----\t\tTheme: {theme.name}\t\t-----\n")
+            print("*" * 80)
         get_datasets(theme)
-        # Print theme and its datasets
-        print(theme)
+
+    if VERBOSE:
+        print("\n\n\n")
+        print("===== LOADING COMPLETE =====")
+        for theme in themes:
+            print(theme)
 
 
 # Make sure to close the driver after the program is finished
@@ -125,4 +157,5 @@ if __name__ == "__main__":
     try:
         main()
     finally:
-        driver.quit()
+        # driver.quit()
+        pass
