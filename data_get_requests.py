@@ -28,14 +28,29 @@ class Theme:
         return f"Theme: {self.name},\nDatasets: {[dataset.name for dataset in self.datasets]}\nDatasets Count: {len(self.datasets)}"
 
 
+DEBUG = True
+VERBOSE = False
+HEADLESS = False
+
+
 def get_dataset_name(link):
+    if DEBUG:
+        print(f"get_dataset_name: {link}")
     db_name = link.split("/")[4]
     return db_name
 
 
 def get_dataset_tag(link):
+    if DEBUG:
+        print(f"get_dataset_tag: {link}")
     nav = f"https://data.gov.ma/data/fr/dataset/{get_dataset_name(link)}"
     link_page = requests.get(nav)
+    if DEBUG:
+        _status = link_page.status_code
+        print(f"status code: {_status}")
+        if _status != 200:
+            print(f"\n\nERROR\n\n")
+            print(f"link: {link_page}")
     link_soup = BeautifulSoup(link_page.content, "html.parser")
     try:
         tag_elements = link_soup.find("ul", class_="tag-list well").find_all("li")
@@ -46,16 +61,32 @@ def get_dataset_tag(link):
 
 
 def get_download_link(link):
+    if DEBUG:
+        print(f"get_download_link: {link}")
     nav = f"https://data.gov.ma/data/fr/dataset/{get_dataset_name(link)}"
     link_page = requests.get(nav)
+    if DEBUG:
+        _status = link_page.status_code
+        print(f"status code: {_status}")
+        if _status != 200:
+            print(f"\n\nERROR\n\n")
+            print(f"link: {link_page}")
     link_soup = BeautifulSoup(link_page.content, "html.parser")
     download_link = link_soup.find("a", class_="resource-url-analytics")["href"]
     return download_link
 
 
 def get_datasets(theme):
+    if DEBUG:
+        print(f"get_datasets: {theme.name}")
     url = f"https://data.gov.ma/data/fr/group/{theme.name.lower()}"
     page = requests.get(url)
+    if DEBUG:
+        _status = page.status_code
+        print(f"status code: {_status}")
+        if _status != 200:
+            print(f"\n\nERROR\n\n")
+            print(f"link: {page.url}")
     soup = BeautifulSoup(page.content, "html.parser")
 
     dataset_items = soup.find_all("li", class_="dataset-item")
@@ -64,6 +95,12 @@ def get_datasets(theme):
 
         nav = f"https://data.gov.ma/{link}"
         link_page = requests.get(nav)
+        if DEBUG:
+            _status = link_page.status_code
+            print(f"status code: {_status}")
+            if _status != 200:
+                print(f"\n\nERROR\n\n")
+                print(f"link: {link_page.url}")
         link_soup = BeautifulSoup(link_page.content, "html.parser")
         db_link = link_soup.find("li", class_="resource-item").find("a")["href"]
         db_name = get_dataset_name(db_link)
@@ -76,13 +113,22 @@ def get_datasets(theme):
             tags=db_tags,
         )
         theme.add_dataset(dataset)
-        print("=" * 50)
-        print(dataset)
+        if VERBOSE:
+            print("=" * 50)
+            print(dataset)
 
 
 def get_themes():
+    if DEBUG:
+        print(f"get_themes")
     url = "https://data.gov.ma/data/fr/group"
     page = requests.get(url)
+    if DEBUG:
+        _status = page.status_code
+        print(f"status code: {_status}")
+        if _status != 200:
+            print(f"\n\nERROR")
+            print(f"link: {page.url}\n\n")
     soup = BeautifulSoup(page.content, "html.parser")
 
     theme_objects = []
@@ -97,15 +143,17 @@ def main():
     # get_datasets()
     themes = get_themes()
     for theme in themes:
-        print("*" * 80)
-        print(f"\n-----\t\tTheme: {theme.name}\t\t-----\n")
-        print("*" * 80)
+        if VERBOSE:
+            print("*" * 80)
+            print(f"\n-----\t\tTheme: {theme.name}\t\t-----\n")
+            print("*" * 80)
         get_datasets(theme)
 
-    print("\n\n\n")
-    print("===== LOADING COMPLETE =====")
-    for theme in themes:
-        print(theme)
+    if VERBOSE:
+        print("\n\n\n")
+        print("===== LOADING COMPLETE =====")
+        for theme in themes:
+            print(theme)
 
 
 if __name__ == "__main__":
