@@ -1,5 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
+import os
 
 
 class Dataset:
@@ -32,8 +33,8 @@ class Theme:
         return f"Theme: {self.name},\nDatasets: {[dataset.name for dataset in self.datasets]}\nDatasets Count: {len(self.datasets)}\nTheme url: {self.url}"
 
 
-DEBUG = True
-VERBOSE = True
+DEBUG = False
+VERBOSE = 1
 
 
 def get_dataset_name(link):
@@ -85,52 +86,89 @@ def get_download_link(link):
     return download_link
 
 
+def local_download(dataset, theme_name):
+    if DEBUG:
+        print(f"local_download. dataset: {dataset}, theme_name: {theme_name}")
+
+    file_extension = dataset.download_link.split(".")[-1]
+    folder_path = os.path.join(f"data/{theme_name}")  # Folder path for the theme
+
+    # Create the folder if it does not exist
+    if not os.path.exists(folder_path):
+        os.makedirs(folder_path)
+
+    file_path = os.path.join(folder_path, f"{dataset.name}.{file_extension}")
+    r = requests.get(dataset.download_link, allow_redirects=True)
+    with open(file_path, "wb") as file:
+        file.write(r.content)
+
+
 def get_datasets(theme):
     if DEBUG:
         print(f"get_datasets: {theme.name}")
-    url = f"https://data.gov.ma/{theme.url}"
-    page = requests.get(url)
-    if DEBUG:
+
+    current_page = 1  # Start from the first page of the theme
+    base_url = f"https://data.gov.ma/{theme.url}"
+    while (
+        True or current_page < 50
+    ):  # <========= maybe find a better secondary condition ?
+        if DEBUG:
+            print(f"current_page: {current_page}")
+        paginated_url = f"{base_url}?page={current_page}"
+        page = requests.get(paginated_url)
+
         _status = page.status_code
 
         if _status != 200:
-            print(f"\n\nERROR")
-            print(f"link: {page.url}")
-            print(f"status code: {_status}\n\n")
-        else:
-            print(f"status code: {_status}")
-    soup = BeautifulSoup(page.content, "html.parser")
-
-    dataset_items = soup.find_all("li", class_="dataset-item")
-    for item in dataset_items:
-        link = item.find("ul").find("li").find("a")["href"]
-
-        nav = f"https://data.gov.ma/{link}"
-        link_page = requests.get(nav)
-        if DEBUG:
-            _status = link_page.status_code
-
-            if _status != 200:
+            if DEBUG:
                 print(f"\n\nERROR")
-                print(f"link: {link_page.url}")
+                print(f"link: {page.url}")
                 print(f"status code: {_status}\n\n")
-            else:
+            break
+        else:
+            if DEBUG:
                 print(f"status code: {_status}")
-        link_soup = BeautifulSoup(link_page.content, "html.parser")
-        db_link = link_soup.find("li", class_="resource-item").find("a")["href"]
-        db_name = get_dataset_name(db_link)
-        db_tags = get_dataset_tag(db_link)
-        download_link = get_download_link(db_link)
-        dataset = Dataset(
-            name=db_name,
-            url=f"https://data.gov.ma/data/fr/dataset/{db_name}",
-            download_link=download_link,
-            tags=db_tags,
-        )
-        theme.add_dataset(dataset)
-        if VERBOSE:
-            print("=" * 50)
-            print(dataset)
+        soup = BeautifulSoup(page.content, "html.parser")
+
+        dataset_items = soup.find_all("li", class_="dataset-item")
+        if not dataset_items:
+            break  # while loop breakpoint
+
+        for item in dataset_items:
+            try:
+                link = item.find("ul").find("li").find("a")["href"]
+            except:
+                break
+
+            nav = f"https://data.gov.ma/{link}"
+            link_page = requests.get(nav)
+            if DEBUG:
+                _status = link_page.status_code
+
+                if _status != 200:
+                    print(f"\n\nERROR")
+                    print(f"link: {link_page.url}")
+                    print(f"status code: {_status}\n\n")
+                else:
+                    print(f"status code: {_status}")
+            link_soup = BeautifulSoup(link_page.content, "html.parser")
+            db_link = link_soup.find("li", class_="resource-item").find("a")["href"]
+            db_name = get_dataset_name(db_link)
+            db_tags = get_dataset_tag(db_link)
+            download_link = get_download_link(db_link)
+            dataset = Dataset(
+                name=db_name,
+                url=f"https://data.gov.ma/data/fr/dataset/{db_name}",
+                download_link=download_link,
+                tags=db_tags,
+            )
+            theme.add_dataset(dataset)
+            local_download(dataset, theme.name)
+            if VERBOSE:
+                print("=" * 50)
+                print(dataset)
+
+        current_page += 1  # move onto next page
 
 
 def get_themes():
