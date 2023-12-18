@@ -34,7 +34,7 @@ class Theme:
 
 
 DEBUG = False
-VERBOSE = 1
+VERBOSE = True
 
 
 def get_dataset_name(link):
