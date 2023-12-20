@@ -1,3 +1,6 @@
 __pycache__/
 .DS_Store
 data/
+chromedriver-mac-x64/
+.ipynb_checkpoints/
+testing_stuff/
