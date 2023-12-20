@@ -20,8 +20,9 @@ and also to skip files within each thematic folder that do not have an Excel fil
 Usage:
     Run this script with Python in an environment where pandas is installed.
 
-    Example command:
-    python data_processor.py
+Example:
+    To execute the script, use the following command:
+    python <script_name>.py
 
 Note:
     - The script requires the 'data' directory to be present in the same directory as the script.

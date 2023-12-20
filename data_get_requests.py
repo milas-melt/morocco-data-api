@@ -3,6 +3,43 @@ from bs4 import BeautifulSoup
 import os
 import logging
 
+"""
+Web Scraping Script for Downloading Datasets
+
+This script is designed to automate the process of downloading datasets from 'data.gov.ma'.
+It scrapes the website to fetch dataset information categorized by themes, downloads each dataset,
+and saves them to respective theme-named folders within a 'data' directory.
+
+Classes:
+- Dataset: Represents a single dataset, including its name, URL, download link, and tags.
+- Theme: Represents a thematic category with a collection of datasets.
+
+Functions:
+- get_dataset_name(link): Extracts the dataset name from a given link.
+- get_dataset_tag(link): Retrieves tags for a dataset by scraping its webpage.
+- get_download_link(link): Extracts the download link of a dataset from its webpage.
+- local_download(dataset, theme_name): Downloads the dataset and saves it in the corresponding theme directory.
+- get_datasets(theme): Scrapes all datasets under a given theme and processes each dataset.
+- get_themes(): Scrapes the main page to get all available themes and their URLs.
+- main(): The main function that orchestrates the scraping and downloading process.
+
+Usage:
+- Run this script with Python in an environment where 'requests' and 'BeautifulSoup' are installed.
+- The script creates a log file ('data_get_requests.log') to log the process and errors.
+
+Note:
+- This script uses the 'requests' library for HTTP requests and 'BeautifulSoup' from 'bs4' for HTML parsing.
+- Logging is used extensively for debugging and tracking the script's progress.
+- The script handles web scraping, parsing, and file downloading operations.
+- This script is compatible with Python 3.8 or later.
+
+Example:
+    To execute the script, use the following command:
+    python <script_name>.py
+
+Ensure that the required Python packages are installed and the environment is properly set up.
+"""
+
 logging.basicConfig(
     level=logging.DEBUG,
     filename="data_get_requests.log",
@@ -42,12 +79,26 @@ class Theme:
 
 
 def get_dataset_name(link):
+    """
+    Extracts the dataset name from a URL.
+
+    :param link: A string representing the URL of a dataset.
+    :return: A string containing the extracted dataset name.
+    """
+
     logging.debug(f"get_dataset_name: {link}")
     db_name = link.split("/")[4]
     return db_name
 
 
 def get_dataset_tag(link):
+    """
+    Retrieves tags for a dataset by scraping its web page.
+
+    :param link: A string representing the URL of a dataset.
+    :return: A list of strings, each representing a tag associated with the dataset.
+    """
+
     logging.debug(f"get_dataset_tag: {link}")
     nav = f"https://data.gov.ma/data/fr/dataset/{get_dataset_name(link)}"
     link_page = requests.get(nav)
@@ -69,6 +120,13 @@ def get_dataset_tag(link):
 
 
 def get_download_link(link):
+    """
+    Extracts the download link of a dataset from its web page.
+
+    :param link: A string representing the URL of a dataset.
+    :return: A string containing the URL for downloading the dataset.
+    """
+
     logging.debug(f"get_download_link: {link}")
     nav = f"https://data.gov.ma/data/fr/dataset/{get_dataset_name(link)}"
     link_page = requests.get(nav)
@@ -87,6 +145,14 @@ def get_download_link(link):
 
 
 def local_download(dataset, theme_name):
+    """
+    Downloads a dataset and saves it to a specified theme directory.
+
+    :param dataset: A 'Dataset' object containing dataset details.
+    :param theme_name: A string representing the name of the theme.
+    :return: None. The function saves the downloaded file locally.
+    """
+
     logging.debug(f"local_download. dataset: {dataset}, theme_name: {theme_name}")
 
     file_extension = dataset.download_link.split(".")[-1]
@@ -103,6 +169,13 @@ def local_download(dataset, theme_name):
 
 
 def get_datasets(theme):
+    """
+    Scrapes and processes all datasets under a given theme.
+
+    :param theme: A 'Theme' object representing the theme to scrape.
+    :return: None. The function updates the 'Theme' object with datasets.
+    """
+
     logging.debug(f"get_datasets: {theme.name}")
 
     current_page = 1  # Start from the first page of the theme
@@ -166,6 +239,12 @@ def get_datasets(theme):
 
 
 def get_themes():
+    """
+    Scrapes the main page to get all available themes and their URLs.
+
+    :return: A list of 'Theme' objects, each representing a different theme.
+    """
+
     logging.debug(f"get_themes")
     url = "https://data.gov.ma/data/fr/group"
     page = requests.get(url)
