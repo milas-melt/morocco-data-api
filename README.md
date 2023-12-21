@@ -1,3 +1,33 @@
+# API for Morocco Open data
+
+## Getting started
+
+-   prerequisites
+    -   Basic understanding: `Python`, `AWS`, `Command Line`
+    -   Software requirements: `Python`, `AWS CLI`, ... (check `requirements.txt`)
+    -   AWS Account Setup
+-   Clone the repo
+-   setup virtual environment
+
+```
+# -------- e.g. virtual environment setup --------
+python -m venv venv
+source venv/bin/activate  # On Unix/macOS
+venv\Scripts\activate     # On Windows
+```
+
+-   run `pip install -r requirements.txt`
+
+-   AWS Configuration with `aws configure` followed by your aws creds. (aws services include `Lambda`, `S3`, `API Gateway`)
+
+-   local testing with `mimic_lambda_execution_environment.py`
+
+-   deploying to AWS (you shouldn't need to setup anything, skip this step)
+
+-   Testing the Deployed Application
+    -   Invoke Lambda via AWS Console (you shouldn't need to setup anything, skip this step)
+    -   API Gateway Testing
+
 ## `data_processor.py`
 
 make sure `xlrd` module is installed

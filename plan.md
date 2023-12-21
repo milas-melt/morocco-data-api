@@ -51,3 +51,4 @@ improvements
     -   live dashboard webapp
 -   testing scripts
 -   scraping with scrapy for scaling
+-   API gateway testing: if applicable, show how to test the API endpoints through tools like Postman or a web browser
