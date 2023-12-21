@@ -34,7 +34,7 @@ class Theme:
 
 DEBUG = False
 VERBOSE = True
-HEADLESS = False
+HEADLESS = True
 
 # Set up the Selenium WebDriver
 chromedriver_path = "./chromedriver-mac-x64/chromedriver"
