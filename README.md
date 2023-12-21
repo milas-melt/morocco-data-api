@@ -8,6 +8,13 @@ install packages & setup => `data_get_request.py` => `data_processor.py`
 
 ## AWS considerations
 
+to test Lambda functions, we mimic Lambda Execution Environment => `mimic_lambda_execution_environment.py`
+
+**instal packages**:
+
+-   AWS SDK `boto3`
+-   AWS CLI: `awscli`
+
 ### S3
 
 -   bucket => data-morocco
