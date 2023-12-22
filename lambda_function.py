@@ -7,10 +7,15 @@ s3_client = boto3.client("s3")
 
 
 def lambda_handler(event, context):
-    # Extract parameters from event object
-    query_params = event.get("queryStringParameters", {})
-    thematic_subfolder = query_params.get("thematic_subfolder")
-    file_name = query_params.get("file_name")
+    # # Extract parameters from event object
+    # query_params = event.get("queryStringParameters", {})
+    # thematic_subfolder = query_params.get("thematic_subfolder")
+    # file_name = query_params.get("file_name")
+
+    # Extract path parameters from event object
+    path_params = event.get("pathParameters", {})
+    thematic_subfolder = path_params.get("themeName")
+    file_name = path_params.get("datasetName")
 
     # Validate parameters
     if not thematic_subfolder or not file_name:

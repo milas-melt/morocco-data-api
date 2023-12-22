@@ -1,11 +1,19 @@
 import json
 from lambda_function import lambda_handler
 
-# Sample event mimicking API Gateway query parameters
+# # Sample event mimicking API Gateway query parameters
+# event = {
+#     "queryStringParameters": {
+#         "thematic_subfolder": "Agriculture",
+#         "file_name": "cheptel-2010-2021.csv",
+#     }
+# }
+
+# Sample event mimicking API Gateway path parameters
 event = {
-    "queryStringParameters": {
-        "thematic_subfolder": "Agriculture",
-        "file_name": "cheptel-2010-2021.csv",
+    "pathParameters": {
+        "themeName": "Agriculture",
+        "datasetName": "cheptel-2010-2021.csv",
     }
 }
 

@@ -19,21 +19,59 @@
     - upload lambda function on the cloud
     - configure event test then test it on the cloud
 
-5. create api
-   i. setup api gateway
-   ii. define endpoints
+5. create api ✅
+
+    - setup api gateway
+    - define endpoints
 
 6. integrate lambda with s3 ✅
-   i. write lambda functions
-   ii. set permission
 
-7. Documentation
+    - write lambda functions
+    - set permission
 
-8. Monitoring and Logging
+7. Test ✅
+
+    - local lambda
+    - cloud lambda
+
+8. Deploy in dev
+
+    - dev stage creation
+    - dev stage deployment
+
+9. Security
+
+    - for public-facing stages or production, implement authorizers, API keys and access control
+
+10. Documentation
+
+11. Monitoring and Logging
 
     - AWS CloudWatch for monitoring the performance and logs APIs and Lambda functions
+    - or just import logging for now
 
-9. Cost Management: Regularly review your AWS usage and costs to optimize spending
+    ```
+        import logging
+
+        # Initialize Logger
+        logger = logging.getLogger()
+        logger.setLevel(logging.INFO)
+
+        def lambda_handler(event, context):
+            # existing code to extract path parameters...
+
+            file_key = f"csv_data/{thematic_subfolder}/{file_name}"
+            logger.info(f"Attempting to fetch S3 object: {file_key}")
+
+            # existing S3 get_object code...
+
+    ```
+
+12. Cost Management: Regularly review your AWS usage and costs to optimize spending
+
+13. Deploy
+    - deploy
+    - test prod
 
 ---
 
@@ -52,3 +90,8 @@ improvements
 -   testing scripts
 -   scraping with scrapy for scaling
 -   API gateway testing: if applicable, show how to test the API endpoints through tools like Postman or a web browser
+-   API customisation
+    -   move to AWS REST API
+-   performance tracking
+    -   AWS CloudWatch
+    -   (?) enabling x-ray tracing for monitoring API calls
