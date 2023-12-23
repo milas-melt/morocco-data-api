@@ -34,7 +34,7 @@
     - local lambda
     - cloud lambda
 
-8. Deploy in dev
+8. Deploy in dev ✅
 
     - dev stage creation
     - dev stage deployment
@@ -95,3 +95,4 @@ improvements
 -   performance tracking
     -   AWS CloudWatch
     -   (?) enabling x-ray tracing for monitoring API calls
+-   Standardize csv filenames (lowercase, no special chars, \_, ...) ⚠️
