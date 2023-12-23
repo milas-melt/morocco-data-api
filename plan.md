@@ -39,9 +39,22 @@
     - dev stage creation
     - dev stage deployment
 
-9. Security
+9. Security ⏳
 
-    - for public-facing stages or production, implement authorizers, API keys and access control
+    - Implement authorisers
+        - Lambda authorisers
+        - Cognito User Pools
+        - IAM Authorizers
+    - Use API keys
+        - Create API Key
+        - Setup Usage Plans
+        - Distribute Keys Securely
+    - Enable CORS (cross-origin ressource sharing)
+        - Configure CORS
+        - Specify Allowed Origins
+    - Throttle and Set Quotas
+        - Set Rate Limits
+        - Quotas
 
 10. Documentation
 
