@@ -39,51 +39,33 @@
     - dev stage creation
     - dev stage deployment
 
-9. Security ⏳
+9. Security ✅
 
-    - Implement authorisers
-        - Lambda authorisers
-        - Cognito User Pools
-        - IAM Authorizers
     - Use API keys
+
         - Create API Key
         - Setup Usage Plans
         - Distribute Keys Securely
-    - Enable CORS (cross-origin ressource sharing)
-        - Configure CORS
-        - Specify Allowed Origins
+
     - Throttle and Set Quotas
+
         - Set Rate Limits
         - Quotas
 
-10. Documentation
+    - Test Security Configurations
 
-11. Monitoring and Logging
+        - Try hacking the API
+        - Stress test, ...
 
-    - AWS CloudWatch for monitoring the performance and logs APIs and Lambda functions
-    - or just import logging for now
+10. Documentation ⏳
 
-    ```
-        import logging
+11. Security ⏳
 
-        # Initialize Logger
-        logger = logging.getLogger()
-        logger.setLevel(logging.INFO)
+    - Implement authorisers
+        - Cognito User Pools ✅
 
-        def lambda_handler(event, context):
-            # existing code to extract path parameters...
-
-            file_key = f"csv_data/{thematic_subfolder}/{file_name}"
-            logger.info(f"Attempting to fetch S3 object: {file_key}")
-
-            # existing S3 get_object code...
-
-    ```
-
-12. Cost Management: Regularly review your AWS usage and costs to optimize spending
-
-13. Deploy
-    - deploy
+12. Deploy prod
+    - deploy prod
     - test prod
 
 ---
@@ -109,3 +91,27 @@ improvements
     -   AWS CloudWatch
     -   (?) enabling x-ray tracing for monitoring API calls
 -   Standardize csv filenames (lowercase, no special chars, \_, ...) ⚠️
+-   Enable CORS (cross-origin ressource sharing)
+    -   Configure CORS
+    -   Specify Allowed Origins
+-   Monitoring and Logging
+
+    -   AWS CloudWatch for monitoring the performance and logs APIs and Lambda functions
+    -   or just import logging for now
+
+    ```
+        import logging
+
+        # Initialize Logger
+        logger = logging.getLogger()
+        logger.setLevel(logging.INFO)
+
+        def lambda_handler(event, context):
+            # existing code to extract path parameters...
+
+            file_key = f"csv_data/{thematic_subfolder}/{file_name}"
+            logger.info(f"Attempting to fetch S3 object: {file_key}")
+
+            # existing S3 get_object code...
+
+    ```

@@ -2,6 +2,12 @@
 
 ## Getting started
 
+If you have dev API Key. you can straight up call the API without any setup with the below command:
+
+```
+curl -H "x-api-key: <YOUR_API_KEY> " "https://87xycqy6za.execute-api.eu-north-1.amazonaws.com/dev/data?theme=<THEME_VAR>&dataset=<DATASET_VAR>"
+```
+
 -   prerequisites
     -   Basic understanding: `Python`, `AWS`, `Command Line`
     -   Software requirements: `Python`, `AWS CLI`, ... (check `requirements.txt`)
